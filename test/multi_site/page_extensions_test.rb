@@ -4,20 +4,20 @@ class PageExtensionsTest < Test::Unit::TestCase
   test_helper :page
   
   def setup
-    setup_page(make_page!("Root"))
-    @page.slug, @page.breadcrumb = "/", "/"
-    @page.save!
-
-    @site = Site.create(:name => "Site A",
-                        :domain => "^a\.", :base_domain => "a.example.com",
-                        :position => 1, :homepage_id => @page.id)
+    @site_a = Site.create(:name => "Site A",
+                        :domain => "^a\.", :base_domain => "a.example.com", :position => 1)
+    @page = @site_a.homepage
+    @site_b = Site.create(:name => "Site B",
+                        :domain => "^b\.", :base_domain => "b.example.com", :position => 2)
   end
 
   def test_should_find_page_on_other_site
-    Page.current_site = @site
-    site_b = Site.create(:name => "Site B", :domain => "^b\.", :base_domain => "b.example.com")
-    kid = make_kid!(site_b.homepage, "a_child")
+    Page.current_site = @site_a
+    kid = make_kid!(@site_b.homepage, "a_child")
     assert_equal kid, Page.find_by_url("b.example.com:/a_child")
+  end
+  def test_should_raise_if_site_is_implied_but_cant_be_found
+
   end
 
   # MultiSite tests, to make sure their functionality still works
@@ -43,7 +43,7 @@ class PageExtensionsTest < Test::Unit::TestCase
     # Now find a site-scoped page
     doc_page = make_kid!(@page, "documentation")
     assert_nothing_raised {
-      Page.current_site = @site
+      Page.current_site = @site_a
       assert_equal @page, Page.find_by_url("/")
       assert_equal doc_page, Page.find_by_url("/documentation")
     }
@@ -58,9 +58,9 @@ class PageExtensionsTest < Test::Unit::TestCase
   end
   
   def test_should_nullify_site_homepage_id_on_destroy
-    assert_not_nil @site.homepage_id
+    assert_not_nil @site_a.homepage_id
     @page.destroy
-    assert_nil @site.reload.homepage_id
+    assert_nil @site_a.reload.homepage_id
   end
 
   protected
