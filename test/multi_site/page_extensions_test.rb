@@ -6,9 +6,10 @@ class PageExtensionsTest < Test::Unit::TestCase
   def setup
     @site_a = Site.create(:name => "Site A",
                         :domain => "^a\.", :base_domain => "a.example.com", :position => 1)
-    @page = @site_a.homepage
+    @page = @site_a.homepage; @page.status_id = 100; @page.save!
     @site_b = Site.create(:name => "Site B",
                         :domain => "^b\.", :base_domain => "b.example.com", :position => 2)
+    page_b = @site_b.homepage; page_b.status_id = 100; page_b.save!
   end
 
   def test_should_find_page_on_other_site
@@ -17,7 +18,8 @@ class PageExtensionsTest < Test::Unit::TestCase
     assert_equal kid, Page.find_by_url("b.example.com:/a_child")
   end
   def test_should_raise_if_site_is_implied_but_cant_be_found
-
+    Page.current_site = @site_a
+    assert_raise(Page::MissingSiteError) { Page.find_by_url("c.example.com:/") }
   end
 
   # MultiSite tests, to make sure their functionality still works

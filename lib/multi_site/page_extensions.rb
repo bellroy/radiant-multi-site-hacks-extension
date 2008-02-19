@@ -24,6 +24,7 @@ module MultiSite::PageExtensions::ClassMethods
     site = nil
     if url.match(/(.+):(.+)/)
       site, url = Site.find_by_base_domain($1), $2
+      raise Page::MissingSiteError unless site
     end
     if site
       [site.homepage, url]

@@ -9,6 +9,7 @@ class MultiSiteHacksExtension < Radiant::Extension
   def activate
     require File.join(File.dirname(__FILE__), "lib/multi_site/page_extensions.rb")
     Page.send :include, MultiSite::PageExtensions
+    require File.join(File.dirname(__FILE__), "app/models/page.rb")
   end
   
 end
