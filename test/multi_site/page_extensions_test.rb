@@ -21,6 +21,10 @@ class PageExtensionsTest < Test::Unit::TestCase
     Page.current_site = @site_a
     assert_raise(Page::MissingSiteError) { Page.find_by_url("c.example.com:/") }
   end
+  def test_should_return_nil_if_site_is_found_but_page_isnt
+    Page.current_site = @site_a
+    assert_nil Page.find_by_url("b.example.com:/not-a-page") 
+  end
 
   # MultiSite tests, to make sure their functionality still works
 
