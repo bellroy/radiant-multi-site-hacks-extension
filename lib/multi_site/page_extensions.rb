@@ -1,9 +1,5 @@
 module MultiSite::PageExtensions
   
-  def site
-    self[:site] || self.root.site
-  end
-  
   module ClassMethods
     def find_by_url_with_sites(url, live=true)
       root = nil
