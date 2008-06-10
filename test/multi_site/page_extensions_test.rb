@@ -68,6 +68,12 @@ class PageExtensionsTest < Test::Unit::TestCase
     @page.destroy
     assert_nil @site_a.reload.homepage_id
   end
+  
+  def test_should_not_nullify_site_homepage_id_on_destroy_if_not_site_root_page
+    kid = make_kid!(@page, 'sub')
+    kid.destroy
+    assert_not_nil @site_a.reload.homepage_id, 'homepage id should not be nullifed by deleted child page'
+  end
 
   protected
 
