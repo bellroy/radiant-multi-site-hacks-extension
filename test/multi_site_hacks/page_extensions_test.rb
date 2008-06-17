@@ -44,13 +44,13 @@ class PageExtensionsTest < Test::Unit::TestCase
     # Defaults should still work
     assert_nothing_raised {
       Page.current_site = nil
-      assert_equal @page, Page.find_by_url("/")
+      assert_equal @page, Page.find_by_url("/"), 'page is not root page when no current site'
     }
     # Now find a site-scoped page
     doc_page = make_kid!(@page, "documentation")
     assert_nothing_raised {
       Page.current_site = @site_a
-      assert_equal @page, Page.find_by_url("/")
+      assert_equal @page, Page.find_by_url("/"), 'page is not root page'
       assert_equal doc_page, Page.find_by_url("/documentation")
     }
     # Now try a site that has no homepage

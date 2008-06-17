@@ -1,4 +1,15 @@
-module MultiSite::PageExtensions
+module MultiSiteHacks::PageExtensions
+  
+  def self.included(base)
+    class <<base
+      include ClassMethods
+      alias_method_chain :find_by_url, :sites
+    end
+  end
+  
+  class MissingSiteError < StandardError
+    def initialize(message = "Missing Site - I can't find the Site your search implies"); super end
+  end  
   
   module ClassMethods
     def find_by_url_with_sites(url, live=true)
@@ -12,16 +23,7 @@ module MultiSite::PageExtensions
       root.find_by_url(url, live)
     end
     
-    # def url_with_sites
-    #   if parent
-    #     parent.child_url(self)
-    #   else
-    #     "/"
-    #   end
-    # end
-  
     private
-  
     def site_root_and_url_from_url_or_current_site(url)
       site = nil
       if url.match(/(.+):(.+)/)
