@@ -26,7 +26,7 @@ module MultiSiteHacks::PageExtensions
     private
     def site_root_and_url_from_url_or_current_site(url)
       site = nil
-      if url.match(/(.+):(.+)/)
+      if url.match(/^[^:]+:[^:]+$/) && url.match(/^(#{sites_re_string}):(.+)/)
         site, url = Site.find_by_base_domain($1), $2
         raise Page::MissingSiteError unless site
       end
@@ -35,6 +35,9 @@ module MultiSiteHacks::PageExtensions
       else
         [self.current_site.homepage, url]
       end
+    end
+    def sites_re_string
+      Site.find(:all).collect(&:base_domain).join("|")
     end
   end
 end

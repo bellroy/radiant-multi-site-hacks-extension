@@ -17,9 +17,9 @@ class PageExtensionsTest < Test::Unit::TestCase
     kid = make_kid!(@site_b.homepage, "a_child")
     assert_equal kid, Page.find_by_url("b.example.com:/a_child")
   end
-  def test_should_raise_if_site_is_implied_but_cant_be_found
-    Page.current_site = @site_a
-    assert_raise(Page::MissingSiteError) { Page.find_by_url("c.example.com:/") }
+  def test_should_not_search_sites_unless_site_will_be_found
+    Page.expects(:find_by_base_domain).never
+    Page.find_by_url("c.example.com:/")
   end
   def test_should_return_nil_if_site_is_found_but_page_isnt
     Page.current_site = @site_a
@@ -65,7 +65,9 @@ class PageExtensionsTest < Test::Unit::TestCase
   
   def test_should_nullify_site_homepage_id_on_destroy
     assert_not_nil @site_a.homepage_id
-    @page.destroy
+    page = @site_a.homepage
+    page.destroy
+
     assert_nil @site_a.reload.homepage_id
   end
   
