@@ -27,7 +27,6 @@ class PageExtensionsTest < Test::Unit::TestCase
   end
 
   # MultiSite tests, to make sure their functionality still works
-
   def test_should_override_url
     assert_respond_to @page, :url_with_sites
     assert_respond_to @page, :url_without_sites
@@ -71,6 +70,7 @@ class PageExtensionsTest < Test::Unit::TestCase
     assert_nil @site_a.reload.homepage_id
   end
   
+  # New tests
   def test_should_not_nullify_site_homepage_id_on_destroy_if_not_site_root_page
     kid = make_kid!(@page, 'sub')
     kid.destroy
