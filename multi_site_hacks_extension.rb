@@ -7,8 +7,8 @@ class MultiSiteHacksExtension < Radiant::Extension
   url "http://code.trike.com.au/svn/radiant/extensions/multi_site_hacks"
   
   def activate
-    require File.join(File.dirname(__FILE__), "lib/multi_site_hacks/page_extensions.rb")
-    Page.send :include, MultiSiteHacks::PageExtensions
+    # require File.join(File.dirname(__FILE__), "lib/multi_site_hacks/page_extensions.rb")
+    Page.send :include, MultiSiteHacks::StandardTags
   end
   
 end
